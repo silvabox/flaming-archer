@@ -18,7 +18,7 @@ class EventsController < ApplicationController
     @date = params[:date] ? Date.parse(params[:date]) : Date.today
 
     @occurrences_by_date = @event.occurrences_in_calendar(@date).group_by { |occ| occ.start_date }
-
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @event }

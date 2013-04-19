@@ -51,3 +51,5 @@ gem 'ice_cube'
 # gem 'schedule_attributes', :git => "git://github.com/nicholaides/Schedule-Attributes.git"
 
 gem 'simple_form'
+
+gem 'friendly_id'
