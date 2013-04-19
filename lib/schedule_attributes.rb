@@ -4,6 +4,10 @@ require 'active_support/time_with_zone'
 require 'ostruct'
 
 module ScheduleAttributes
+  def self.included(base)
+    base.send :attr_accessible, :schedule_attributes
+  end
+
   # Your code goes here...
   DAY_NAMES = Date::DAYNAMES.map(&:downcase).map(&:to_sym)
   
@@ -21,29 +25,29 @@ module ScheduleAttributes
 
   def schedule_attributes=(options)
     options = options.dup
-    options[:interval] = options[:interval].to_i
+    options[:every] = options[:every].to_i
     options[:start_date] &&= ScheduleAttributes.parse_in_timezone(options[:start_date])
-    options[:date]       &&= ScheduleAttributes.parse_in_timezone(options[:date])
-    options[:until_date] &&= ScheduleAttributes.parse_in_timezone(options[:until_date])
+    options[:date] &&= ScheduleAttributes.parse_in_timezone(options[:date])
+    options[:until] &&= ScheduleAttributes.parse_in_timezone(options[:until])
 
-    if options[:repeat].to_i == 0
-       @schedule  = IceCube::Schedule.new(options[:date])
-       @schedule .add_recurrence_date(options[:date])
-    else
-       @schedule  = IceCube::Schedule.new(options[:start_date])
+    if options[:repeats] == 'true'
+  
+      @schedule  = IceCube::Schedule.new(options[:start_date])
 
-      rule = case options[:interval_unit]
+      rule = case options[:repeat]
         when 'daily'
-          IceCube::Rule.daily options[:interval]
+          IceCube::Rule.daily options[:every]
         when 'weekly'
-          IceCube::Rule.weekly(options[:interval]).day( *IceCube::TimeUtil::DAYS.keys.select{|day| options[day].to_i == 1 } )
+          IceCube::Rule.weekly(options[:every]).day( *IceCube::TimeUtil::DAYS.keys.select{|day| options[day].to_i == 1 } )
       end
 
-      rule.until(options[:until_date]) if options[:ends] == 'eventually'
+      rule.until(options[:until]) if options[:ends] == 'eventually'
 
-       @schedule.add_recurrence_rule(rule)
+      @schedule.add_recurrence_rule(rule)
+    else
+       @schedule  = IceCube::Schedule.new(options[:start_date])
     end
-
+    
     self.schedule_yaml =  @schedule.to_yaml
   end
 
@@ -51,18 +55,18 @@ module ScheduleAttributes
     atts = {}
 
     if rule = schedule.rrules.first
-      atts[:repeat]     = 1
+      atts[:repeats]     = true
       atts[:start_date] = schedule.start_date.to_date
       atts[:date]       = Date.today # for populating the other part of the form
 
       rule_hash = rule.to_hash
-      atts[:interval] = rule_hash[:interval]
+      atts[:every] = rule_hash[:interval]
 
       case rule
       when IceCube::DailyRule
-        atts[:interval_unit] = 'daily'
+        atts[:repeat] = 'daily'
       when IceCube::WeeklyRule
-        atts[:interval_unit] = 'weekly'
+        atts[:repeat] = 'weekly'
         day_validations = rule_hash[:validations][:day]
         DAY_NAMES.each  do |day, i|
           atts[day.to_sym] = day_validations && day_validations.include?(i)
@@ -78,7 +82,7 @@ module ScheduleAttributes
         atts[:ends] = 'never'
       end
     else
-      atts[:repeat]     = 0
+      atts[:repeats]     = false
       atts[:date]       = schedule.start_date.to_date
       atts[:start_date] = Date.today # for populating the other part of the form
     end

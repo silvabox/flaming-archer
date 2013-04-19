@@ -10,6 +10,24 @@
   <dd><%= @event.schedule %></dd>
 </dl>
 
+<div id="articles">
+  <h2 id="month">
+    <%= link_to "<", date:  @date.prev_month %>
+    <%=  @date .strftime("%B %Y") %>   
+    <%= link_to ">", date:  @date.next_month %>
+  </h2>
+  <%= calendar @date do |date| %>
+    <%= date.day %>
+    <% if @occurrences_by_date[date] %>
+    <ul>
+      <% @occurrences_by_date[date].each do |occurrence| %>
+        <li><%= @event.name %></li>
+      <% end %>
+    </ul>
+    <% end %>
+  <% end %>
+</div>
+
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
               events_path, :class => 'btn'  %>

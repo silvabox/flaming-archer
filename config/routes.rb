@@ -1,5 +1,7 @@
 IceCubeEvents::Application.routes.draw do
-  resources :events
+  resources :events do
+    resources :event_occurrences, except: [:new]
+  end
 
   root :to => "events#index"
 
