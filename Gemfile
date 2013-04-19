@@ -7,6 +7,8 @@ gem 'rails', '3.2.13'
 
 gem 'sqlite3'
 
+gem 'haml'
+gem 'haml-rails'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -21,6 +23,11 @@ group :assets do
 
   gem 'twitter-bootstrap-rails'
   gem 'bootstrap-sass'
+  gem 'jquery-ui-rails'
+end
+
+group :test, :development do
+  gem 'rspec-rails'
 end
 
 gem 'jquery-rails'
@@ -44,3 +51,5 @@ gem 'ice_cube'
 # gem 'schedule_attributes', :git => "git://github.com/nicholaides/Schedule-Attributes.git"
 
 gem 'simple_form'
+
+gem 'friendly_id'

@@ -14,7 +14,7 @@
 /log/*.log
 /tmp
 
-# Other defaults added by GitHub for Rails
+# Other GitHub added Rails defaults
 *.rbc
 *.sassc
 .sass-cache

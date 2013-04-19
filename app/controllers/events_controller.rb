@@ -15,6 +15,10 @@ class EventsController < ApplicationController
   def show
     @event = Event.find(params[:id])
 
+    @date = params[:date] ? Date.parse(params[:date]) : Date.today
+
+    @occurrences_by_date = @event.occurrences_in_calendar(@date).group_by { |occ| occ.start_date }
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @event }
@@ -27,7 +31,7 @@ class EventsController < ApplicationController
     @event = Event.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html # haml 'new'
       format.json { render json: @event }
     end
   end
@@ -41,7 +45,6 @@ class EventsController < ApplicationController
   # POST /events.json
   def create
     @event = Event.new(params[:event])
-    @event.schedule_attributes = params[:schedule_attributes]
 
 # debugger
     respond_to do |format|
@@ -59,11 +62,9 @@ class EventsController < ApplicationController
   # PUT /events/1.json
   def update
     @event = Event.find(params[:id])
-    @event.schedule_attributes = params[:schedule_attributes]
 
-# debugger
     respond_to do |format|
-      if @event.update_attributes(params[:event]) && @event.update_attributes(params[:event])
+      if @event.update_attributes(params[:event])
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { head :no_content }
       else
