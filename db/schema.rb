@@ -11,11 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130418162841) do
+ActiveRecord::Schema.define(:version => 20130424174455) do
+
+  create_table "attendances", :force => true do |t|
+    t.string   "presence"
+    t.integer  "event_occurrence_id"
+    t.integer  "participant_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "attendances", ["event_occurrence_id"], :name => "index_attendances_on_event_occurrence_id"
+  add_index "attendances", ["participant_id"], :name => "index_attendances_on_participant_id"
 
   create_table "event_occurrences", :force => true do |t|
-    t.date     "start_date"
-    t.date     "end_date"
+    t.datetime "start"
+    t.datetime "end"
     t.boolean  "all_day"
     t.string   "status"
     t.integer  "event_id"
@@ -50,6 +61,19 @@ ActiveRecord::Schema.define(:version => 20130418162841) do
     t.string   "time_zone"
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
+  end
+
+  create_table "events_participants", :force => true do |t|
+    t.integer "event_id"
+    t.integer "participant_id"
+  end
+
+  create_table "participants", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "phone"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end

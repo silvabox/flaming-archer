@@ -17,8 +17,8 @@ class EventsController < ApplicationController
 
     @date = params[:date] ? Date.parse(params[:date]) : Date.today
 
-    @occurrences_by_date = @event.occurrences_in_calendar(@date).group_by { |occ| occ.start_date }
-    
+    @occurrences_by_date = @event.occurrences_in_calendar_page(@date).group_by { |occ| occ.start.to_date }
+  # debugger
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @event }
@@ -84,5 +84,21 @@ class EventsController < ApplicationController
       format.html { redirect_to events_url }
       format.json { head :no_content }
     end
+  end
+
+  def add_participant
+    event = Event.find(params[:event_id])
+    participant = Participant.find(params[:id])
+    event.participants << participant
+    
+    redirect_to event
+  end
+
+  def remove_participant
+    event = Event.find(params[:event_id])
+    participant = Participant.find(params[:id])
+    event.participants.delete participant
+
+    redirect_to event
   end
 end

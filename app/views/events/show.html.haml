@@ -23,7 +23,7 @@
     - if @occurrences_by_date[date]
       %ul
         - @occurrences_by_date[date].each do |occurrence|
-          %li= link_to @event.name, [@event, occurrence]
+          %li= link_to @event.name, event_event_occurrence_path(@event, occurrence)
 
 .form-actions
   = link_to t('.back', :default => t("helpers.links.back")),

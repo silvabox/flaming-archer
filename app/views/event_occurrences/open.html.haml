@@ -1,0 +1,4 @@
+%ul
+- @occurrences.each do |occurrence|
+  %li
+    = link_to occurrence.event.name + " " + occurrence.start.strftime("%A %e %b %Y at %H:%M"), [occurrence.event, occurrence]

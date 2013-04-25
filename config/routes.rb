@@ -1,7 +1,20 @@
 IceCubeEvents::Application.routes.draw do
-  resources :events do
-    resources :event_occurrences, except: [:new]
+  resources :participants do
+      post "/events/:id", to: "participants#add_event", as: 'event'
+      delete "/participants/:id", to: "participants#remove_event"
   end
+
+  resources :events do
+    resources :event_occurrences, path: 'occurrences', except: [:new] do
+      post "/participants/:id", to: "event_occurrences#add_participant", as: 'participant'
+      delete "/participants/:id", to: "event_occurrences#remove_participant"
+    end
+
+    post "/participants/:id", to: "events#add_participant", as: 'participant'
+    delete "/participants/:id", to: "events#remove_participant"
+  end
+
+  get "/occurrences/", to: "event_occurrences#open"
 
   root :to => "events#index"
 

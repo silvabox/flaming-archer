@@ -1,0 +1,35 @@
+= @occurrence.start.strftime("%A %e %b %Y %H %M %Z")
+%h1
+  = @event.name
+%h2
+  = @occurrence.start.getlocal.strftime("%A %e %b %Y at %H:%M")
+%h3
+  Attendances
+.participants
+  %ul#attendance_list
+    - @attendances.each do |attendance|
+      %li.attendance
+        %span.participant_name= link_to attendance.participant.name, [@event, @occurrence, attendance.participant], :method => "delete"
+        %span.attendance_type= attendance.presence
+.participants
+  %ul#participants_list
+    - @participants[:expected].each do |participant|
+      %li.participant
+        %span.participant_name= link_to participant.name, [@event, @occurrence, participant], :method => "post"
+.participants
+  %ul#others_list
+    - @participants[:other].each do |participant|
+      %li.participant
+        %span.participant_name= link_to participant.name, [@event, @occurrence, participant], :method => "post"
+.form-actions
+  = link_to t('.back', :default => t("helpers.links.back")),
+              @event, :class => 'btn'
+  = form_tag event_event_occurrence_path(@event, @occurrence), :method => 'put', :style => "display: inline;" do
+    = fields_for @occurrence do |f|
+      = f.hidden_field :status, :value => "closed"    
+    = submit_tag "Complete", :class => 'btn btn-primary'
+
+  = form_tag event_event_occurrence_path(@event, @occurrence), :method => 'put', :style => "display: inline;" do
+    = fields_for @occurrence do |f|
+      = f.hidden_field :status, :value => "cancelled"
+    = submit_tag "Cancel", :class => 'btn btn-danger'
