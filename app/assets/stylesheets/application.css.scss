@@ -12,3 +12,23 @@
  *= jquery.ui.all
  *= require_tree .
  */
+
+
+ul {
+  #participants_list {
+    list-style: none;
+  }
+
+  #attendance_list {
+    list-style: none;
+  }
+
+  #others_list {
+    list-style: none;
+  }
+}
+
+.calendar ul {
+    list-style: none;
+    margin: 0;
+}
